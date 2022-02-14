@@ -7,6 +7,21 @@ frame:RegisterEvent("PLAYER_LOGIN");
 local tooltip
 local socketTooltip
 
+local EMPTY_SOCKET_TEXTURES = {
+	[136256] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-BLUE
+	[136257] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-META
+	[136258] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-RED
+	[136259] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-YELLOW
+	[136260] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET
+	[407324] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-COGWHEEL
+	[407325] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-HYDRAULIC
+	[458977] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-PRISMATIC
+	[2958629] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-PUNCHCARDBLUE
+	[2958630] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-PUNCHCARDRED
+	[2958631] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-PUNCHCARDYELLOW
+	[4095404] = true,	-- INTERFACE\\ITEMSOCKETINGFRAME\\UI-EMPTYSOCKET-DOMINATION
+}
+
 -- Inhibit Regular Expression magic characters ^$()%.[]*+-?)
 local function EscapeSearchString(str)
 	return str:gsub("(%W)","%%%1")
@@ -14,7 +29,7 @@ end
 
 -- function borrowed from PersonalLootHelper
 local function CreateEmptyTooltip()
-    local tip = CreateFrame('GameTooltip')
+	local tip = CreateFrame('GameTooltip')
 	local leftside = {}
 	local rightside = {}
 	local L, R
@@ -113,8 +128,7 @@ local function ItemHasSockets(itemLink)
 		local textureName = texture and texture:GetTexture()
 
 		if textureName then
-			local canonicalTextureName = string.gsub(string.upper(textureName), "\\", "/")
-			result = string.find(canonicalTextureName, EscapeSearchString("ITEMSOCKETINGFRAME/UI-EMPTYSOCKET-"))
+			result = EMPTY_SOCKET_TEXTURES[textureName]
 		end
 	end
 	return result
@@ -249,7 +263,7 @@ local function EventHandler(self, event, ...)
 	triggerQualitySlider:SetScript("OnValueChanged", function(self, value) 
 		value = math.floor(value)
 		SavedData.trigger_quality = value 
-	    triggerQualityValue:SetText(_G["ITEM_QUALITY"..value.."_DESC"])
+		triggerQualityValue:SetText(_G["ITEM_QUALITY"..value.."_DESC"])
 	end)
 	
 	triggerQualityValue:SetText(_G["ITEM_QUALITY"..SavedData.trigger_quality.."_DESC"])
@@ -258,4 +272,3 @@ local function EventHandler(self, event, ...)
 	InterfaceOptions_AddCategory(panel)
 end
 frame:SetScript("OnEvent", EventHandler);
-
